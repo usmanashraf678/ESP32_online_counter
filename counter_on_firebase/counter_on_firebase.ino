@@ -152,7 +152,11 @@ void setup() {
   Serial.begin(115200);                                   // Select the same baud rate if you want to see the datas on Serial Monitor
 
   Serial.println("Serial communication started\n\n");  
-           
+
+  unsigned long previousMillis = 0;
+  unsigned long interval = 10000; // reset after 10 sec
+  unsigned long currentMillis = 0;
+  
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);                                     //try to connect with wifi
   Serial.print("Connecting to ");
   Serial.print(WIFI_SSID);
@@ -160,6 +164,14 @@ void setup() {
   while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
     delay(500);
+
+    // reset every 5 seconds
+    currentMillis = millis();
+    if(currentMillis - previousMillis >=interval){
+      WiFi.disconnect();
+      WiFi.reconnect();
+      previousMillis = currentMillis;
+    }
   }
 
   Serial.println();
