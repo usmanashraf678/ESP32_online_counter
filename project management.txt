@@ -1,0 +1,7 @@
+milestones in the project:
+display current counter on firebase
+display current counter on small SSDs -- using multiplexing with one uln2003
+speaker functionality
+
+design a pcb circuit
+

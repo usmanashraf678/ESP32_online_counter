@@ -1,0 +1,6 @@
+install arduino json from library manager (v5)
+download firebase-arduino-mananger
+
+database secret: RMaoeR1ArcF2fo0BUaVa5eKI1KAutrmhcgMNoIh9
+
+https://dl.espressif.com/dl/package_esp32_index.json, http://arduino.esp8266.com/stable/package_esp8266com_index.json
