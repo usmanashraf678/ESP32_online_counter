@@ -19,16 +19,13 @@ Keypad customKeypad = Keypad(makeKeymap(Keys), rowPins, colPins, ROWS, COLS);
 
 #define NUM_OF_DISPLAY 3
 
-//Pin connected to Strobe (pin 1) of 4094
-int strobePin = 15; ////atmega(pin-25)
-//Pin connected to Data (pin 2) of 4094
-int dataPin = 2;  //atmega(pin-24)
-//Pin connected to Clock (pin 3) of 4094
-int clockPin = 4;  //atmega(pin-23)
+int strobePin = 15; //Pin connected to Strobe (pin 1) of 4094
+int dataPin = 2;  //Pin connected to Data (pin 2) of 4094
+int clockPin = 4;  //Pin connected to Clock (pin 3) of 4094
+
 char shiftOutBuffer[NUM_OF_DISPLAY]={0};
 // 0-9 and none
-byte segChar[]={ 
-
+byte segChar[]={
   0b00111111,
   0b00000110,
   0b01011011,
@@ -51,23 +48,15 @@ void update_display()
       shiftOut(dataPin, clockPin, MSBFIRST, segChar[shiftOutBuffer[i]]);             
     }
   digitalWrite(strobePin, HIGH);
-
-  Serial.println(counter);
+//  Serial.println(counter);
 }
 
 void update_display_and_counter()
 {
-  int i=0;      
-  digitalWrite(strobePin, LOW);
-  for(i=NUM_OF_DISPLAY-1;i>-1;i--)
-    {     
-      shiftOut(dataPin, clockPin, MSBFIRST, segChar[shiftOutBuffer[i]]);             
-    }
-  digitalWrite(strobePin, HIGH);
-
+  update_display();
   counter = shiftOutBuffer[0]*1 + shiftOutBuffer[1]*10 + shiftOutBuffer[2]*100;
 
-  Serial.println(counter);
+//  Serial.println(counter);
 }
 
 void blink_display()
@@ -84,9 +73,7 @@ void blink_display()
   shiftOutBuffer[2] = (counter / 100) % 10;
 
   update_display();
-  delay(500);
-
-  
+  delay(500);  
 }
 
 void shift_left(int new_entrant)
@@ -115,23 +102,22 @@ void decrement_counter()
 
 void reset_digits(){
   int i=0;
-  for(i=0;i<NUM_OF_DISPLAY;i++)
-  {
-   shiftOutBuffer[i]=0;
+  for(i=0;i<NUM_OF_DISPLAY;i++){
+    shiftOutBuffer[i]=0;
   }
-  update_display();
+    
+  update_display_and_counter();
+  
 }
 
 void setup()
 {
   Serial.begin(115200);
-  int i=0;
   pinMode(strobePin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
 
   reset_digits();
- 
 }
   
 void loop()
@@ -198,6 +184,13 @@ void loop()
 
    case '*':
       reset_digits();
+      blink_display();
+      blink_display();
+      break;
+   
+   case '#':
+      blink_display();
+      blink_display();
       break;
       
 //     case '*':
