@@ -39,6 +39,7 @@ byte segChar[]={
   0b00000000,
 };
 
+boolean counter_updated = false;
 void update_display()
 {
   int i=0;      
@@ -201,4 +202,6 @@ void loop()
 //      shift_left(3);
       break;
   }
+  
+
 }
