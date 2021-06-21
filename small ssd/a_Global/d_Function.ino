@@ -1,9 +1,21 @@
+
+
+
+/************** Functions implementation for small SSDs ****************/
 void lights_off()
 // Turns off all three digits  
 {
   for (int i = 0; i < 3; i++) 
   {digitalWrite(digit[i], LOW);}
 }
+
+void lights_on()
+// Turns off all three digits  
+{
+  for (int i = 0; i < 3; i++) 
+  {digitalWrite(digit[i], HIGH);}
+}
+
 
 
 void turnON_Digit(int number) 

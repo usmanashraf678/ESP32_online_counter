@@ -4,8 +4,8 @@
 #define FIREBASE_HOST "queue-mgmt-947d1-default-rtdb.asia-southeast1.firebasedatabase.app"                     //Your Firebase Project URL goes here without "http:" , "\" and "/"
 #define FIREBASE_AUTH "RMaoeR1ArcF2fo0BUaVa5eKI1KAutrmhcgMNoIh9" //Your Firebase Database Secret goes here
 
-#define WIFI_SSID "HUAWEI-8bz8"                                               //WiFi SSID to which you want NodeMCU to connect
-#define WIFI_PASSWORD "qpwjUsMH"                                      //Password of your wifi network 
+#define WIFI_SSID "HUAWEI-8bz8" //"Umer rice mill"                                              //WiFi SSID to which you want NodeMCU to connect
+#define WIFI_PASSWORD "qpwjUsMH" // "Premier1"                                     //Password of your wifi network 
  
 // Declare the Firebase Data object in the global scope
 FirebaseData firebaseData;

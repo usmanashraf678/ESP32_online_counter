@@ -15,8 +15,8 @@ char Keys[ROWS][COLS] =
   {'*','0','#','D'}
 };
 
-byte rowPins[ROWS] = {13, 12, 14, 27}; //{R1, R2, R3, R4}
-byte colPins[COLS] = {26, 25, 33, 32}; //{C1, C2, C3, C4}
+byte rowPins[ROWS] = {16, 17, 32, 33}; //{R1, R2, R3, R4} 34, 35, 32, 33
+byte colPins[COLS] = {25, 26, 27, 14}; //{C1, C2, C3, C4} 25, 26, 27, 14 # 16 and 17 are TX/RX pins used as digital read
 
 Keypad customKeypad = Keypad(makeKeymap(Keys), rowPins, colPins, ROWS, COLS); 
 

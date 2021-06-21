@@ -12,8 +12,8 @@ char Keys[ROWS][COLS] =
   {'*','0','#','D'}
 };
 
-byte rowPins[ROWS] = {13, 12, 14, 27}; //{R1, R2, R3, R4}
-byte colPins[COLS] = {26, 25, 33, 32}; //{C1, C2, C3, C4}
+byte rowPins[ROWS] = {27, 26, 25, 24}; //{R1, R2, R3, R4}
+byte colPins[COLS] = {23, 22, 21, 20}; //{C1, C2, C3, C4}
 
 Keypad customKeypad = Keypad(makeKeymap(Keys), rowPins, colPins, ROWS, COLS); 
 
