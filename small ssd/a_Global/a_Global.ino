@@ -1,7 +1,10 @@
 // include statements
 #include <WiFi.h>
-#include <FirebaseESP32.h>
 #include <Keypad.h> // to use keypad
+#include <FirebaseESP32.h>
+#include <time.h>
+
+
 
 /****************** Constant declarations for small SSD ****************/
 // Pins to control each digit of small SSD (digit_one, digit_two, digit_three)
@@ -17,8 +20,11 @@ const int digit[] = { DIGIT_ONE, DIGIT_TWO, DIGIT_THREE};
 const int input_to_7447[] = { BIT_A, BIT_B, BIT_C, BIT_D};
 
 /************ Counter on firebase declarations *****************************/
-boolean counter_uploaded = false;
+boolean updated_on_cloud = false;
+boolean updated_locally = false;
 int counter; // global counter value
+String global_timestamp; // global time stamp of update
+int d_100, d_10, d_1; // the digits of the number with the number being d_100, d_10, d_1
 
 // keypad constant value and layout
 const byte ROWS = 4; //four rows
@@ -49,10 +55,11 @@ byte segChar[]={
 #define FIREBASE_HOST "queue-mgmt-947d1-default-rtdb.asia-southeast1.firebasedatabase.app"                     //Your Firebase Project URL goes here without "http:" , "\" and "/"
 #define FIREBASE_AUTH "RMaoeR1ArcF2fo0BUaVa5eKI1KAutrmhcgMNoIh9" //Your Firebase Database Secret goes here
 
-#define WIFI_SSID "Umer rice mill" // "HUAWEI-8bz8"                                               //WiFi SSID to which you want NodeMCU to connect
-#define WIFI_PASSWORD "Premier1"// "qpwjUsMH"                                      //Password of your wifi network 
+#define WIFI_SSID "Umer rice mill"     //"HUAWEI-8bz8"                                          //WiFi SSID to which you want NodeMCU to connect
+#define WIFI_PASSWORD  "Premier1" //"qpwjUsMH"                                    //Password of your wifi network 
+#define WIFI_TIMEOUT_MS 10000
 
-// Declare the Firebase Data object in the global scope
+// Declare the Data object in the global scope
 FirebaseData firebaseData;
 
 // Declare global variable to store value, initial counter value
@@ -66,9 +73,10 @@ void lights_off();  // turns off all 3 digits
 void lights_on(); // turns on all 3 digits
 void displayNum(int number);  // input integer between 0-9
 void count2nine();  // counts from 0-9
-void displayNum3(int one, int two, int three); // displays 3 numbers simultaneously
+void displayNum3(); // displays 3 numbers simultaneously
 
 /**************** Functions of updating display ******************/
+void attempt_wifi_connect();
 void update_display(); // update the large display
 void update_display_and_counter(); // update the online counter and display
 void blink_display(); // blink the large display
@@ -76,4 +84,4 @@ void shift_left(int new_entrant); // shift new number to accomodate new entrant 
 void increment_counter(); // increase the counter value
 void decrement_counter(); // decrease the counter value
 void reset_digits(); // reset the digits of the counter
-void write_to_firebase(int val); 
+void write_to_firebase(int val);

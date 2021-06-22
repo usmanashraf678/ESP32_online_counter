@@ -4,13 +4,9 @@ void loop()
 //  count2nine();
 
   // Displays 3 numbers on 7 segment display 
-  displayNum3(8, 2, 4);
+  displayNum3();
 
-  int customKey = customKeypad.getKey(); 
-//  if(customKey)
-//  { 
-//    Serial.println(customKey);
-//  }
+  int customKey = customKeypad.getKey();
 
   switch (customKey) {
     case '1':
@@ -86,9 +82,13 @@ void loop()
       break;
   }
   
-  if (counter_uploaded == false){
-    write_to_firebase(counter);
-  }
-
-// -- code inside the loop for counter main ---//
+  if (updated_on_cloud == false && WiFi.status() == WL_CONNECTED){
+    // if not updated on cloud and you have a wifi connection, then write to firebase
+    global_timestamp = get_time();
+    write_to_firebase(counter, global_timestamp);
+    }
+  if(updated_locally == true && WiFi.status() != WL_CONNECTED){// value changed locally but wifi is not connected
+      reattempt_wifi_connect();
+      updated_locally = false;
+    }
 }
