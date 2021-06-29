@@ -6,3 +6,9 @@ speaker functionality
 design a pcb circuit
 
 PKT-5
+
+Config manager by Nick Wiersma
+Esp-wifi settings by Juerd Waalboer
+ESP 32 Wifi Manager Kevin Harrington"qpwjUsMH"
+
+
