@@ -1,14 +1,17 @@
-milestones in the project:
-display current counter on firebase
-display current counter on small SSDs -- using multiplexing with one uln2003
+Urgent:
+1. get screws for box
+2. Get nails for fix the large SSD box.
+
+
+Next version after dabba pack:
+Hardware:
 speaker functionality
+design a pcb circuit with use of TX/RX 
 
-design a pcb circuit
 
-PKT-5
 
-Config manager by Nick Wiersma
-Esp-wifi settings by Juerd Waalboer
-ESP 32 Wifi Manager Kevin Harrington"qpwjUsMH"
+Large scale production requirements:
+1. Get a box for the circuit with db-9, input power and swtich, keypad out and small ssd out holes.: to house 3in by 5 in circuit
+1. Large display ready made with 3 SSDs
 
 

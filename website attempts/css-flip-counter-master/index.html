@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8"/>
+  <title>Book my seat</title>
+  <meta name="description" content="Online Counter for Clinics."/>
+  <meta name="keywords" content="Counter, Token, Clinics, Doctos, Book, Appointment, Hospitals,"/>
+  <meta name="author" content="Usman Ashraf"/>
+
+  <!-- Counter script -->
+  <script type="text/javascript" src="js/flipcounter.js"></script>
+  <script type="text/javascript" src="js/modernizr.custom.21954.js"></script>
+  <!-- Counter styles -->
+  <link rel="stylesheet" type="text/css" href="css/style.css"/>
+
+  <!-- NOT REQUIRED FOR COUNTER TO FUNCTION, JUST FOR DEMO PURPOSES -->
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/vader/jquery-ui.css"/>
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:400,500,700">
+
+</head>
+
+<body>
+<h1>Muhammadi Clinic Counter</h1>
+
+<ul id="style-switcher">
+  <li><a href="#" class="active" data-style="default">Default</a></li>
+  <li><a href="#" data-style="light">Light</a></li>
+  <li><a href="#" data-style="small">Small</a></li>
+  <li><a href="#" data-style="huge">Huge</a></li>
+</ul>
+
+<div class="clearfix">
+  <div class="counter-wrapper">
+    <ul class="flip-counter default" id="myCounter"></ul>
+  </div>
+</div>
+
+<ul id="demo_controls">
+  <li>
+    <p>Increment: <span id="inc_value">123</span></p>
+
+    <div id="inc_slider" class="demo_widget"></div>
+  </li>
+  <li>
+    <p>Pace: <span id="pace_value">1000</span>ms</p>
+
+    <div id="pace_slider" class="demo_widget"></div>
+  </li>
+</ul>
+
+<p class="info">Slide Increment to 0 to stop.</p>
+<p class="info"><a href="https://github.com/cnanney/css-flip-counter">https://github.com/cnanney/css-flip-counter</a></p>
+<p class="info"><a href="http://cnanney.com/journal/code/css-flip-counter-revisited">http://cnanney.com/journal/code/css-flip-counter-revisited</a>
+</p>
+
+<script>
+
+  $(function(){
+
+    var myCounter = new flipCounter('myCounter', {value: 1000, inc: 123, pace: 1000, auto: true});
+
+    $('#style-switcher a').on('click', function(e){
+      e.preventDefault();
+      $("#myCounter").removeClass().addClass('flip-counter '+$(this).data('style'));
+      $('#style-switcher a').removeClass('active');
+      $(this).addClass('active');
+    });
+
+    $('#inc_slider').slider({
+      range: 'max',
+      value: 123,
+      min: 0,
+      max: 1000,
+      slide: function(event, ui){
+        $('#inc_value').text(ui.value);
+        myCounter.setIncrement(ui.value);
+
+        if (ui.value == 0) myCounter.setAuto(false);
+        else myCounter.setAuto(true);
+      }
+    });
+
+    // Pace
+    $('#pace_slider').slider({
+      range: 'max',
+      value: 1000,
+      min: 400,
+      max: 2000,
+      step: 100,
+      slide: function(event, ui){
+        myCounter.setPace(ui.value);
+        $("#pace_value").text(ui.value);
+      }
+    });
+
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+@font-face {
+	font-family: flip;
+	src: url(fonts/Skyfont-NonCommercial.otf);
+}
+
+*{
+	padding: 0;
+	margin:0;
+	box-sizing: border-box;
+}
+body{
+	width: 100%;
+	height: 100vh;
+	background: #f0f1f1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.container{
+	/* width: 80%;
+	height: 200px; */
+	width: auto;
+    height: auto;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	flex-direction: column;
+	margin: auto;
+}
+.container> div{
+	/* flex-basis: 20%; */
+	text-align: center;
+	box-shadow:inset -2px -2px 8px rgba(255,255,255,1),
+				inset -2px -2px 12px rgba(255,255,255,0.5),
+				inset 2px 2px 4px rgba(255,255,255,0.1),
+				inset 2px 2px 8px rgba(0,0,0,0.15);
+	border-radius: 10px;
+	padding: 10px;
+	border-bottom: 5px solid #ff6363;
+}
+.counter{
+	font-family: flip;
+	font-size: 10rem;
+	font-weight: normal;
+}
+
+/* Cochin */
+
+.container> div img{
+	width: 50%;
+	margin: 1em;
+
+}
+#logo{
+	width:fit-content;
+}
+p{
+	font-size: 1.5rem;
+	font-family: Ubuntu;
+	font-weight:bold;
+}
+
+.date_container{
+	margin: 2rem;
+	font-weight: bold;
+	font-family: cursive;
+}
+
+@media screen and (min-width: 500px) {
+	body {
+	  background-color: lightgreen;
+	  
+	}
+	p{
+		font-size: 4rem;
+		/* font-family: Ubuntu;
+		font-weight:bold; */
+	}
+
+	.counter{
+		font-size: 10rem;
+
+	}
+	
+	.date_container{
+		font-size: 1.5rem;
+  }
+  #logo{
+	width: 80%;
+	height: 80%;
+	object-fit: cover;	
+	margin:auto;
+}
+}
