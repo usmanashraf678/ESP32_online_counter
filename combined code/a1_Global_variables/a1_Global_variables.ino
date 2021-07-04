@@ -81,7 +81,7 @@ int val=0;
 //Variables
 int i = 0;
 int statusCode;
-const char* WIFI_SSID = "Umer rice mill";//"HUAWEI-8bz8"
-const char* WIFI_PASSWORD = "Premier1"; //"qpwjUsMH" 
+const char* WIFI_SSID = "netis_C8B281";//"HUAWEI-8bz8"
+const char* WIFI_PASSWORD = "04517196"; //"qpwjUsMH" 
 String st;
 String content;
