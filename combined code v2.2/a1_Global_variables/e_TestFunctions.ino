@@ -33,10 +33,13 @@ void blink_display(){
   update_display();
 
   unsigned long blink_time_start = millis(); 
+  digitalWrite(buzzerPin, HIGH);
 
   while (millis() - blink_time_start < 500) {
       // wait for some time untill SSD blinks
       }
+  digitalWrite(buzzerPin, LOW);
+
   update_global_digits();
   
   shiftOutBuffer[0] = d_1;
@@ -48,6 +51,7 @@ void blink_display(){
   blink_time_start = millis();
   while (millis() - blink_time_start < 500) {//  delay(500); wait for some time untill SSD blinks
     }
+    
 }
 
 void shift_left(int new_entrant){
