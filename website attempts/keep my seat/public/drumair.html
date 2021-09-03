@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="get live token number for clinics">
+	<meta name="keywords" content="live counter, live token, book my seat, clinics">
+	<meta name="robots" content="INDEX, FOLLOW">
+	<title>Dr Umair Yaqoob</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
+	<link rel="shortcut icon" type="image/png" href="images/chair1-removebg.png" />
+
+</head>
+
+<body>
+	<div class="container">
+		<div id="tablet">
+			<img id="logo" src="images/dr_umair.PNG">
+			<p id="now_serving"> Now Serving</p>
+			<h1 id="count_id" class="counter">000</h1>
+		</div>
+		<div id ="date_id" class="date_container">
+			Last Updated: 00:00:00 PM Tue 00-00-00
+		</div>
+		<div class="grid-container">
+			<div class="grid-item">For feedback and similar projects: Call/Message Usman Ashraf</div>
+			<div class="grid-item"><a href="https://api.whatsapp.com/send/?phone=16789564931">+1 678 956 4931</a></div>
+			<div class="grid-item"><a href="">0342 602 2671</a></div>
+
+		</div>
+	</div>
+
+
+	<!--Firebase Libraries-->
+	<script src="https://www.gstatic.com/firebasejs/8.7.0//firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.7.0//firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.7.0//firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-analytics.js"></script>
+
+	<script>
+		// Your web app's Firebase configuration
+		// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+		var firebaseConfig = {
+			apiKey: "AIzaSyAMeDVLJikpQUpAi44VOYl5-rNRonTlS64",
+			authDomain: "queue-mgmt-947d1.firebaseapp.com",
+			databaseURL: "https://queue-mgmt-947d1-default-rtdb.asia-southeast1.firebasedatabase.app",
+			projectId: "queue-mgmt-947d1",
+			storageBucket: "queue-mgmt-947d1.appspot.com",
+			messagingSenderId: "122213607597",
+			appId: "1:122213607597:web:c02601780aa437164efe24",
+			measurementId: "G-3KZJWBXKE9"
+		};
+		// Initialize Firebase
+		firebase.initializeApp(firebaseConfig);
+		firebase.analytics();
+
+	</script>
+
+
+	<script src="script_dr_umair.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,114 @@
+@font-face {
+	font-family: flip;
+	src: url(fonts/Skyfont-NonCommercial.otf);
+}
+
+*{
+	padding: 0;
+	margin:0;
+	box-sizing: border-box;
+}
+body{
+	width: 100%;
+	height: 100vh;
+	background: #f0f1f1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.container{
+	/* width: 80%;
+	height: 200px; */
+	width: auto;
+    height: auto;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	flex-direction: column;
+	margin: auto;
+}
+.container #tablet, .date_container {
+	/* flex-basis: 20%; */
+	text-align: center;
+	box-shadow:inset -2px -2px 8px rgba(255,255,255,1),
+				inset -2px -2px 12px rgba(255,255,255,0.5),
+				inset 2px 2px 4px rgba(255,255,255,0.1),
+				inset 2px 2px 8px rgba(0,0,0,0.15);
+	border-radius: 10px;
+	padding: 10px;
+	border-bottom: 5px solid #ff6363;
+}
+.counter{
+	font-family: flip;
+	font-size: 10rem;
+	font-weight: normal;
+}
+
+/* Cochin */
+
+.container> div img{
+	width: 50%;
+	margin: 1em;
+
+}
+#logo{
+	width:fit-content;
+}
+#now_serving{
+	font-size: 1.5rem;
+	font-family: Ubuntu;
+	font-weight:bold;
+}
+
+.date_container{
+	margin-top: 2rem;
+    margin-bottom: 0.5rem;
+	font-weight: bold;
+	font-family: cursive;
+}
+/* #foot{
+	width:fit-content;
+} */
+
+.grid-container {
+	display: grid;
+	/* grid-template-columns: auto auto auto; */
+	/* background-color: #2196F3; */
+	padding: 1em;
+  }
+  
+  .grid-item {
+	/* background-color: rgba(255, 255, 255, 0.8); */
+	/* border: 1px solid rgba(0, 0, 0, 0.8); */
+	font-size: 1rem;
+	font-family: cursive;
+	padding: 0.1rem;
+	text-align: center;
+  }
+
+@media screen and (min-width: 500px) {
+	body {
+	  background-color: #f0f1f1;
+	  
+	}
+	#now_serving{
+		font-size: 4rem;
+		/* font-family: Ubuntu;
+		font-weight:bold; */
+	}
+
+	.counter{
+		font-size: 10rem;
+
+	}
+	
+	.date_container{
+		font-size: 1.5rem;
+  }
+  #logo{
+	width: 80%;
+	height: 80%;
+	object-fit: cover;	
+	margin:auto;
+}
+}
