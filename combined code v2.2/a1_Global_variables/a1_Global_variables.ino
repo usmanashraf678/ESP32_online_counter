@@ -59,7 +59,7 @@ int buzzerPin = 16;
 
 char shiftOutBuffer[NUM_OF_DISPLAY]={0};
 // 0-9 and none
-byte segChar[]={
+byte segChar[]={ //.gfedcba 0, 1, 2, .. 9, all off
   0b00111111,  0b00000110,  0b01011011,  0b01001111,  0b01100110,  0b01101101,
   0b01111101,  0b00000111,  0b01111111,  0b01101111,  0b00000000,
 };

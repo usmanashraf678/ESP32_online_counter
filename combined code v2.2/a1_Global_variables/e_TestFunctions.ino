@@ -92,7 +92,7 @@ void reset_digits(){
 
 void write_to_firebase(int val, String timestamp){
 // Firebase Error Handling And Writing Data At Specifed Path************************************************
-  if (Firebase.setInt(firebaseData, "/test_counter", val) && Firebase.setString(firebaseData, "/test_time", global_timestamp)) {    // On successful Write operation, function returns 1  
+  if (Firebase.setInt(firebaseData, "/dr_umair_counter", val) && Firebase.setString(firebaseData, "/dr_umair_time", global_timestamp)) {    // On successful Write operation, function returns 1  
        Serial.println("Value Uploaded Successfully");
        Serial.print("Val = ");
        Serial.println(val);
