@@ -1,3 +1,6 @@
+When showing setting for wifi:
+1. show more than 4 networks
+2. what if connected by internet not available.
 Urgent:
 
 
