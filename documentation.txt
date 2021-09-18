@@ -4,3 +4,11 @@ download firebase-arduino-mananger
 database secret: RMaoeR1ArcF2fo0BUaVa5eKI1KAutrmhcgMNoIh9
 
 https://dl.espressif.com/dl/package_esp32_index.json, http://arduino.esp8266.com/stable/package_esp8266com_index.json
+IP address rx: 08:3A:F2:51:59:30
+
+Mac tx: 08:3A:F2:52:EA:AC
+
+ESPNOW limits:
+
+Both devices should be connected to the same wifi.
+Or, both the devices should be disconnected.

@@ -12,3 +12,4 @@ design a pcb circuit with use of TX/RX
 Large scale production requirements:
 1. Get a box for the circuit with db-9, input power and swtich, keypad out and small ssd out holes.: to house 3in by 5 in circuit
 1. Large display ready made with 3 SSDs
+

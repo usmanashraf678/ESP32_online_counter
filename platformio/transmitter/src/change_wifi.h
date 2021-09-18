@@ -3,6 +3,11 @@
 #include <WiFi.h>
 #include <EEPROM.h>
 #include <wifi_helpers.h>
+
+WebServer server_for_AP(80);
+int statusCode;
+String st;
+String content;
 /********** Wifi Credentials Chnage *********************/
 bool testWifi(void);
 void launchWeb();
@@ -38,17 +43,16 @@ void launchWeb()
     Serial.println(WiFi.localIP());
     Serial.print("SoftAP IP: ");
     Serial.println(WiFi.softAPIP());
-    Serial.print("Wi-Fi Channel: ");
-    Serial.println(WiFi.channel());
     createWebServer();
     // Start the server
+    Serial.println("created server sucessfully");
     server_for_AP.begin();
     Serial.println("Server started");
 }
 
 void setupAP(void)
 {
-    WiFi.mode(WIFI_MODE_APSTA);
+    WiFi.mode(WIFI_STA);
     WiFi.disconnect();
     delay(100);
     int n = WiFi.scanNetworks();

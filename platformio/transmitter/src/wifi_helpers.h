@@ -10,29 +10,22 @@
 #include <AsyncElegantOTA.h>
 #include "change_wifi.h"
 #include "large_ssd.h"
-#include "receiver_esp.h"
+#include "writer_fb_esp.h"
+
+/**************** Firebase Settings ****************************************/
+#define FIREBASE_HOST "queue-mgmt-947d1-default-rtdb.asia-southeast1.firebasedatabase.app"                     //Your Firebase Project URL goes here without "http:" , "\" and "/"
+#define FIREBASE_AUTH "RMaoeR1ArcF2fo0BUaVa5eKI1KAutrmhcgMNoIh9" //Your Firebase Database Secret goes here
+
+/*************** Async web server for Elegant OTA *************************************/
+AsyncWebServer server(80);
 
 void figure_out_wifi();
 void connect_to_wifi(const char *ssid, const char *pass);
 void open_wifi_settings();
 void start_elegant_OTA();
 void post_wifi_setup();
-void streaming_setup();
-void streamCallback(StreamData data);
-void streamTimeoutCallback(bool timeout);
-void streaming_loop();
 
 void wifi_from_EEPROM();
-
-String get_time() // returns a string of current time e.g. Sat 20-Apr-19 12:31:45
-{
-    time_t now;
-    time(&now);
-    char time_output[30];
-    // See http://www.cplusplus.com/reference/ctime/strftime/ for strftime functions
-    strftime(time_output, 30, "%r %a %d-%m-%y", localtime(&now));
-    return String(time_output);
-}
 
 void start_elegant_OTA(){
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
@@ -69,7 +62,7 @@ void connect_to_wifi(const char *ssid, const char *pass) // try to connect with 
 {
     uint32_t retry_count = 0;
     REDO: // jump back to the top of the function
-    WiFi.mode(WIFI_MODE_APSTA);
+    WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, pass);
 
     Serial.print("Trying to connect to: ");
@@ -118,9 +111,9 @@ void figure_out_wifi() // attempt to connect to wifi (1: hard code, 2: EEPROM )
     }
     
     // looking for need to reset wifi network
-    Serial.println("Connect D18 to ground in 5 sec to switch wifi");
+    Serial.println("Connect D4 to ground in 1 sec to switch wifi");
     bool wifi_reset = digitalRead(selectWifiPin);
-    delay(5000);
+    delay(1000);
     if (wifi_reset == LOW)
         open_wifi_settings();
 
@@ -129,97 +122,25 @@ void figure_out_wifi() // attempt to connect to wifi (1: hard code, 2: EEPROM )
         Serial.println("let's continue without wifi");
     }
     else
-        post_wifi_setup();
+      post_wifi_setup();
     
 }
 
 void post_wifi_setup() // configure time, firebase, elegant ota on wifi connection
 {
+    // fixate the time
     configTime(0, 0, "pool.ntp.org", "time.nist.gov");
     setenv("TZ", "PKT-5", 1);
 
-    Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH); // connect to firebase
+    // connect to firebase
+    Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
     Firebase.reconnectWiFi(true);
 
-    // streaming_setup();
-
+    // setup elegant OTA
     start_elegant_OTA();
-    // Serial.println(WiFi.macAddress());
+    Serial.println(WiFi.macAddress());
 
     delay(500);
-}
-
-void streaming_setup()
-{
-
-  //In setup(), set the stream callback function to handle data
-  //streamCallback is the function that called when database data changes or updates occurred
-  //streamTimeoutCallback is the function that called when the connection between the server
-  //and client was timeout during HTTP stream
-
-  Firebase.setStreamCallback(fbdo, streamCallback, streamTimeoutCallback);
-
-  //In setup(), set the streaming path to "/test/data" and begin stream connection
-
-  if (!Firebase.beginStream(fbdo, "/dr_umair_counter"))
-  {
-    //Could not begin stream connection, then print out the error detail
-    Serial.println(fbdo.errorReason());
-  }
-}
-
-//Global function that handles stream data
-void streamCallback(StreamData data)
-{
-
-  //Print out all information
-
-  Serial.println("Stream Data...");
-  Serial.println(data.streamPath());
-  Serial.println(data.dataPath());
-  Serial.println(data.dataType());
-
-  //Print out the value
-  //Stream data can be many types which can be determined from function dataType
-
-  if (data.dataTypeEnum() == fb_esp_rtdb_data_type_integer)
-    Serial.println(data.to<int>());
-  else if (data.dataTypeEnum() == fb_esp_rtdb_data_type_string)
-    Serial.println(data.to<String>());
-}
-
-//Global function that notifies when stream connection lost
-//The library will resume the stream connection automatically
-void streamTimeoutCallback(bool timeout)
-{
-  if (timeout)
-  {
-    //Stream timeout occurred
-    Serial.println("Stream timeout, resume streaming...");
-  }
-}
-
-void streaming_loop()
-{
-  if (!Firebase.readStream(fbdo))
-  {
-    Serial.println(fbdo.errorReason());
-  }
-
-  if (fbdo.streamTimeout())
-  {
-    Serial.println("Stream timeout, resume streaming...");
-    Serial.println();
-  }
-
-  if (fbdo.streamAvailable())
-  {
-
-    if (fbdo.dataTypeEnum() == fb_esp_rtdb_data_type_integer)
-      Serial.println(fbdo.to<int>());
-    else if (fbdo.dataTypeEnum() == fb_esp_rtdb_data_type_string)
-      Serial.println(fbdo.to<String>());
-  }
 }
 
 /********* everything above this line has been refactored ****************/
@@ -256,3 +177,6 @@ void reattempt_wifi_connect() // re-attempt connecting to wifi on every even tok
         post_wifi_setup();
     }
 }
+
+
+
