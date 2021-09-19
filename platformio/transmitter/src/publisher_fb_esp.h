@@ -14,6 +14,7 @@
 #include "wifi_helpers.h"
 
 uint8_t broadcastAddress[] = {0x08, 0x3A, 0xF2, 0x51, 0x59, 0x30};
+uint32_t esp_retry = 0;
 
 // Structure example to send data
 // Must match the receiver structure
@@ -35,7 +36,9 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status);
 void esp_now_setup();
 int32_t getWiFiChannel(const char *ssid);
 void post_wifi_setup();
-void write_to_firebase(int val);
+void publish_to_firebase(int val);
+void publish_to_esp();
+void publish_to_fb_and_esp(); // reset the digits of the counter
 
 int32_t getWiFiChannel(const char *ssid)
 {
@@ -71,7 +74,6 @@ void esp_now_setup()
         Serial.println("Error initializing ESP-NOW");
         return;
     }
-    esp_wifi_set_ps(WIFI_PS_NONE);
 
     // Once ESPNow is successfully Init, we will register for Send CB to
     // get the status of Trasnmitted packet
@@ -94,23 +96,27 @@ void esp_now_setup()
 // callback when data is sent
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
 {
-    
-    Serial.print("Last Packet");
+    Serial.print("Last Packet: ");
     // Serial.print(WiFi.channel());
     if (status == 0)
     {
         Serial.println("Delivery success");
+        esp_retry = 0;
     }
     else
     {
         Serial.println("Delivery fail");
-
+        esp_retry++;
+        if (esp_retry <= 1)
+        { // 2 retries allowed
+            publish_to_esp();
+        }
     }
-    // ESP.deepSleep(0.16 * 60 * 1.0e6);
 }
 
 String get_time() // returns a string of current time e.g. Sat 20-Apr-19 12:31:45
 {
+    delay(2000);
     time_t now;
     time(&now);
     char time_output[30];
@@ -119,7 +125,7 @@ String get_time() // returns a string of current time e.g. Sat 20-Apr-19 12:31:4
     return String(time_output);
 }
 
-void write_to_firebase(int val)
+void publish_to_firebase(int val)
 {
     // Firebase Error Handling And Writing Data At Specifed Path************************************************
     if (WiFi.status() == WL_CONNECTED) // updated_on_cloud == false &&
@@ -128,12 +134,12 @@ void write_to_firebase(int val)
 
         if (Firebase.setInt(fbdo, "/dr_irfan_counter", val) && Firebase.setString(fbdo, "/dr_irfan_time", global_timestamp))
         { // On successful Write operation, function returns 1
+            Serial.println("\n");
             Serial.println("Value Uploaded Successfully");
             Serial.print("Val = ");
             Serial.println(val);
             updated_on_cloud = true;
             Serial.println(global_timestamp);
-            Serial.println("\n");
         }
         else
         {
@@ -151,5 +157,13 @@ void publish_to_esp()
     esp_now_send(broadcastAddress, (uint8_t *)&myData, sizeof(myData));
     Serial.printf("sent: %3u on channel: %u\n", myData.c, WiFi.channel());
 
-    delay(500);
+}
+
+void publish_to_fb_and_esp()
+{
+    esp_retry = 0;
+    publish_to_firebase(counter);
+    publish_to_esp();
+    Serial.println("\n");
+
 }

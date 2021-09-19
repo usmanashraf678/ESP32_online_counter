@@ -10,7 +10,7 @@
 #include <AsyncElegantOTA.h>
 #include "change_wifi.h"
 #include "large_ssd.h"
-#include "writer_fb_esp.h"
+#include "publisher_fb_esp.h"
 
 /**************** Firebase Settings ****************************************/
 #define FIREBASE_HOST "queue-mgmt-947d1-default-rtdb.asia-southeast1.firebasedatabase.app"                     //Your Firebase Project URL goes here without "http:" , "\" and "/"
@@ -129,8 +129,7 @@ void figure_out_wifi() // attempt to connect to wifi (1: hard code, 2: EEPROM )
 void post_wifi_setup() // configure time, firebase, elegant ota on wifi connection
 {
     // fixate the time
-    configTime(0, 0, "pool.ntp.org", "time.nist.gov");
-    setenv("TZ", "PKT-5", 1);
+    configTime(18000, 0, "pool.ntp.org", "time.nist.gov");
 
     // connect to firebase
     Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
@@ -140,7 +139,6 @@ void post_wifi_setup() // configure time, firebase, elegant ota on wifi connecti
     start_elegant_OTA();
     Serial.println(WiFi.macAddress());
 
-    delay(500);
 }
 
 /********* everything above this line has been refactored ****************/

@@ -6,8 +6,6 @@
 void update_global_digits();
 void blink_display();             // blink the large display
 void shift_left(int new_entrant); // shift new number to accomodate new entrant on left
-void reset_digits();              // reset the digits of the counter
-void write_to_firebase(int val);
 void read_from_firebase();
 
 void update_large_display();             // update the large display
@@ -32,7 +30,6 @@ void increment_counter();         // increase the counter value
 void update_display_and_counter(); // update the online counter and display
 void update_shiftOutBuffer();
 void blink_display();
-void reset_digits();
 
 void update_large_display()
 {
@@ -109,16 +106,7 @@ void blink_display()
   { //  delay(500); wait for some time untill SSD blinks
   }
 }
-void reset_digits()
-{
-  int i = 0;
-  for (i = 0; i < NUM_OF_DISPLAY; i++)
-  {
-    shiftOutBuffer[i] = 0;
-  }
 
-  update_display_and_counter();
-}
 
 
 // void shift_left_rx(){

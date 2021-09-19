@@ -27,7 +27,7 @@ void setup()
 
   setup_pins_small_ssd(); // setup output pins including light_on()
 
-  // ----- counter setup code ----//
+  // ----- sending data out setup ----//
   pinMode(strobePin, OUTPUT);
   pinMode(clockPin, OUTPUT);
   pinMode(dataPin, OUTPUT);
@@ -36,19 +36,7 @@ void setup()
 
   figure_out_wifi(); // setup wifi, OTA, and check for wifi change
   esp_now_setup();
-
-  // testing the digits
-  // for (int i = 0; i<10; i++){
-  //   shiftOutBuffer[0] = i;
-  //   shiftOutBuffer[1] = i;
-  //   shiftOutBuffer[2] = i;
-  //   update_display();
-  //   delay(500);
-  //   }
-
-  // reset_digits();
-  // updated_on_cloud = false;
-
+  publish_to_fb_and_esp();
 } // end setup()
 
 void loop()
@@ -66,24 +54,23 @@ void loop()
     if (key_pressed >= 0 && key_pressed <= 9)
     { // 0-9
       shift_left(key_pressed);
-      write_to_firebase(counter);
-      publish_to_esp();
+      publish_to_fb_and_esp();
     }
     else if (key_pressed == 17)
     { // A
       counter++;
-      write_to_firebase(counter);
-      publish_to_esp();
+      if(counter >= 1000)
+        counter = 0;
+      publish_to_fb_and_esp();
     }
     else if (key_pressed == 18)
     { // B
       counter = max(counter - 1, 0);
-      write_to_firebase(counter);
-      publish_to_esp();
+      publish_to_fb_and_esp();
     }
     else if (key_pressed == 20 && counter == 353) // D
     {
-      if (WiFi.status() != WL_CONNECTED)
+      if (WiFi.status() == WL_CONNECTED)
         server.end(); // turns off elegant OTA if available
       WiFi.begin();
       open_wifi_settings();
@@ -91,13 +78,11 @@ void loop()
     else if (key_pressed == -6)
     { // asterisk key
       counter = 0;
-      write_to_firebase(counter);
-      publish_to_esp();
+      publish_to_fb_and_esp();
     }
     else if (key_pressed == -13)
     {
-      write_to_firebase(counter);
-      publish_to_esp();
+      publish_to_fb_and_esp();
     }
     if (WiFi.status() != WL_CONNECTED) //updated_locally == true &&
     {                                  // value changed locally but wifi is not connected
@@ -106,10 +91,3 @@ void loop()
     }
   }
 }
-  // using internet to read data
-  // read_from_firebase();
-  // if (counter_needs_push)
-  // {
-  //   update_shiftOutBuffer();
-  //   update_display();
-  // }
