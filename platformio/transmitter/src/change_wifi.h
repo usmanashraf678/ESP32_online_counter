@@ -92,7 +92,7 @@ void setupAP(void)
     }
     st += "</ol>";
     delay(100);
-    WiFi.softAP("keep my seat", "");
+    WiFi.softAP("KMS - Change Wifi", "");
     Serial.println("softap");
     launchWeb();
     Serial.println("over");

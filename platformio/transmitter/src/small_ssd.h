@@ -144,16 +144,16 @@ void display_on_small_ssd(){// Displays 3 different numbers simultaneously
   //display first number on digit 1
   turnON_Digit(1);
   displayNum(d_100); 
-  delay(5);
+  delay(1);
   
   //display second number on digit 2
   turnON_Digit(2);
   displayNum(d_10);
-  delay(5);
+  delay(1);
 
   //display third number on digit 3
   turnON_Digit(3);
   displayNum(d_1); 
-  delay(5);
+  delay(1);
 
 }

@@ -17,6 +17,7 @@
 #include <eeprom_helpers.h>
 #include <wifi_helpers.h>
 #include <large_ssd.h>
+#include "wifi_events.h"
 
 void setup()
 {
@@ -34,9 +35,14 @@ void setup()
   pinMode(buzzerPin, OUTPUT);
   pinMode(selectWifiPin, INPUT_PULLUP);
 
+
+  // setup elegant OTA
+  WiFiSetup();
   figure_out_wifi(); // setup wifi, OTA, and check for wifi change
-  esp_now_setup();
-  publish_to_fb_and_esp();
+  start_elegant_OTA();
+  publish_to_firebase(counter);
+  
+  // esp_now_setup();
 } // end setup()
 
 void loop()
@@ -54,19 +60,19 @@ void loop()
     if (key_pressed >= 0 && key_pressed <= 9)
     { // 0-9
       shift_left(key_pressed);
-      publish_to_fb_and_esp();
+      publish_to_firebase(counter);
     }
     else if (key_pressed == 17)
     { // A
       counter++;
-      if(counter >= 1000)
+      if (counter >= 1000)
         counter = 0;
-      publish_to_fb_and_esp();
+      publish_to_firebase(counter);
     }
     else if (key_pressed == 18)
     { // B
       counter = max(counter - 1, 0);
-      publish_to_fb_and_esp();
+      publish_to_firebase(counter);
     }
     else if (key_pressed == 20 && counter == 353) // D
     {
@@ -78,11 +84,11 @@ void loop()
     else if (key_pressed == -6)
     { // asterisk key
       counter = 0;
-      publish_to_fb_and_esp();
+      publish_to_firebase(counter);
     }
     else if (key_pressed == -13)
     {
-      publish_to_fb_and_esp();
+      publish_to_firebase(counter);
     }
     if (WiFi.status() != WL_CONNECTED) //updated_locally == true &&
     {                                  // value changed locally but wifi is not connected
@@ -90,4 +96,9 @@ void loop()
       // updated_locally = false;
     }
   }
+
+
+
 }
+
+

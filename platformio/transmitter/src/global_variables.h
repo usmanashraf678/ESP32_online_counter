@@ -48,5 +48,14 @@ byte segChar[]={ //.gfedcba 0, 1, 2, .. 9, all off
 
 /*************************** Global variables for Wifi Credentials change ***********/
 //Variables
-const char* WIFI_SSID = "HUAWEI-8bz8";//"HUAWEI-8bz8" // Change THIS!! netis_C8B281
-const char* WIFI_PASSWORD = "qpwjUsMH"; //"qpwjUsMH" // Change THIS!! 04517196
+const char* WIFI_SSID = "fake network";//"HUAWEI-8bz8" // Change THIS!! netis_C8B281
+const char* WIFI_PASSWORD = ""; //"qpwjUsMH" // Change THIS!! 04517196
+
+const char* ssid_ap = "dr_irfan_counter";//"HUAWEI-8bz8" // Change THIS!! netis_C8B281
+const char* pass_ap = "usman@kms.com"; //"qpwjUsMH" // Change THIS!! 04517196
+
+
+String e_ssid;
+String e_pass;
+
+int32_t channel;

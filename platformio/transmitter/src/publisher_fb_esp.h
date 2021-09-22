@@ -13,6 +13,9 @@
 #include <WiFi.h>
 #include "wifi_helpers.h"
 
+// const char *remote_host = "www.google.com";
+const IPAddress remote_ip(192, 168, 43, 1);
+
 uint8_t broadcastAddress[] = {0x08, 0x3A, 0xF2, 0x51, 0x59, 0x30};
 uint32_t esp_retry = 0;
 
@@ -60,9 +63,15 @@ int32_t getWiFiChannel(const char *ssid)
 void esp_now_setup()
 {
     WiFi.mode(WIFI_STA);
-    int32_t channel = getWiFiChannel(WIFI_SSID);
+    // always using the ssid on the eeprom
+    channel = getWiFiChannel(e_ssid.c_str());
+    // Serial.println(channel);
+    // if(WiFi.status() != WL_CONNECTED)
+    // channel = 1;
 
     // WiFi.printDiag(Serial);
+    Serial.printf("Wifi Channel from getWifiChannel is: %d ", channel);
+
     esp_wifi_set_promiscuous(true);
     esp_wifi_set_channel(channel, WIFI_SECOND_CHAN_NONE);
     esp_wifi_set_promiscuous(false);
@@ -116,7 +125,6 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
 
 String get_time() // returns a string of current time e.g. Sat 20-Apr-19 12:31:45
 {
-    delay(2000);
     time_t now;
     time(&now);
     char time_output[30];
@@ -131,9 +139,8 @@ void publish_to_firebase(int val)
     if (WiFi.status() == WL_CONNECTED) // updated_on_cloud == false &&
     {
         String global_timestamp = get_time();
-
-        if (Firebase.setInt(fbdo, "/dr_irfan_counter", val) && Firebase.setString(fbdo, "/dr_irfan_time", global_timestamp))
-        { // On successful Write operation, function returns 1
+        if (Firebase.setIntAsync(fbdo, "/dr_irfan_counter", val) && Firebase.setStringAsync(fbdo, "/dr_irfan_time", global_timestamp))
+        {
             Serial.println("\n");
             Serial.println("Value Uploaded Successfully");
             Serial.print("Val = ");
@@ -143,11 +150,27 @@ void publish_to_firebase(int val)
         }
         else
         {
+            Serial.println("Connected but no internet");
             Serial.println(fbdo.errorReason());
-            post_wifi_setup();
         }
     }
+
+    else
+        Serial.println("Wifi is off");
 }
+
+// Serial.println(global_timestamp);
+// if (Firebase.setInt(fbdo, "/dr_irfan_counter", val))
+
+// if (Firebase.setInt(fbdo, "/dr_irfan_counter", val) && Firebase.setString(fbdo, "/dr_irfan_time", global_timestamp))
+// { // On successful Write operation, function returns 1
+//
+// }
+// else
+// {
+//     Serial.println(fbdo.errorReason());
+//     post_wifi_setup();
+// }
 
 void publish_to_esp()
 {
@@ -155,15 +178,12 @@ void publish_to_esp()
 
     // Send message via ESP-NOW
     esp_now_send(broadcastAddress, (uint8_t *)&myData, sizeof(myData));
-    Serial.printf("sent: %3u on channel: %u\n", myData.c, WiFi.channel());
-
+    Serial.printf("\n sent: %3u on channel: %u, ", myData.c, WiFi.channel());
 }
 
 void publish_to_fb_and_esp()
 {
-    esp_retry = 0;
+    // esp_retry = 0;
+    // publish_to_esp();
     publish_to_firebase(counter);
-    publish_to_esp();
-    Serial.println("\n");
-
 }
