@@ -10,7 +10,7 @@ void WiFiGotIP(WiFiEvent_t event, WiFiEventInfo_t info);
 void WiFiSetup()
 {
     // delete old config
-    WiFi.disconnect(true);
+    // WiFi.disconnect(true);
     // Examples of different ways to register wifi events
     WiFi.onEvent(WiFiEvent);
     // WiFi.onEvent(WiFiGotIP, WiFiEvent_t::SYSTEM_EVENT_STA_GOT_IP);
@@ -61,6 +61,7 @@ void WiFiEvent(WiFiEvent_t event)
         Serial.println(WiFi.localIP());
         Serial.println("running post wifi firebase and date config");
         post_wifi_setup();
+        // esp_now_setup();
         break;
     case SYSTEM_EVENT_STA_LOST_IP:
         Serial.println("Lost IP address and IP address is reset to 0");
@@ -81,7 +82,7 @@ void WiFiEvent(WiFiEvent_t event)
         Serial.println("WiFi access point started");
         break;
     case SYSTEM_EVENT_AP_STOP:
-        Serial.println("WiFi access point  stopped");
+        Serial.println("WiFi access point stopped");
         break;
     case SYSTEM_EVENT_AP_STACONNECTED:
         Serial.println("Client connected");

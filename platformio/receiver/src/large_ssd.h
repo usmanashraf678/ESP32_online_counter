@@ -1,7 +1,6 @@
 #pragma once
 #include <Arduino.h>
 #include <global_variables.h>
-#include "wifi_helpers.h"
 
 /******************** Functions for firebase and large ssd connection ********/
 
@@ -34,7 +33,7 @@ void update_display()
   }
   digitalWrite(strobePin, HIGH);
   updated_locally = true;
-  Serial.println("updated data successfully");
+  // Serial.println("updated data successfully");
 }
 
 void update_display_and_counter()
@@ -83,6 +82,54 @@ void blink_display()
   }
 }
 
+void reset_digits()
+{
+  int i = 0;
+  for (i = 0; i < NUM_OF_DISPLAY; i++)
+  {
+    shiftOutBuffer[i] = 0;
+  }
+
+  update_display_and_counter();
+}
+
+void write_to_firebase(int val, String timestamp)
+{
+  // Firebase Error Handling And Writing Data At Specifed Path************************************************
+  if (Firebase.setInt(fbdo, "/dr_umair_counter", val) && Firebase.setString(fbdo, "/dr_umair_time", global_timestamp))
+  { // On successful Write operation, function returns 1
+    Serial.println("Value Uploaded Successfully");
+    Serial.print("Val = ");
+    Serial.println(val);
+    updated_on_cloud = true;
+    Serial.println(global_timestamp);
+    Serial.println("\n");
+  }
+  else
+  {
+    Serial.println(fbdo.errorReason());
+    // post_wifi_setup();
+  }
+}
+
+void read_from_firebase()
+{
+  if (Firebase.getInt(fbdo, "/dr_umair_counter"))
+  {
+
+    if (fbdo.dataTypeEnum() == fb_esp_rtdb_data_type_integer)
+    {
+      counter = fbdo.to<int>();
+      Serial.println(counter);
+      counter_needs_push = true;
+    }
+  }
+  else
+  {
+    Serial.println(fbdo.errorReason());
+  }
+}
+
 void shift_left(int new_entrant)
 {
   shiftOutBuffer[2] = shiftOutBuffer[1];
@@ -112,50 +159,4 @@ void decrement_counter()
   shiftOutBuffer[2] = d_100;
 }
 
-void reset_digits()
-{
-  int i = 0;
-  for (i = 0; i < NUM_OF_DISPLAY; i++)
-  {
-    shiftOutBuffer[i] = 0;
-  }
 
-  update_display_and_counter();
-}
-
-void write_to_firebase(int val, String timestamp)
-{
-  // Firebase Error Handling And Writing Data At Specifed Path************************************************
-  if (Firebase.setInt(fbdo, "/dr_umair_counter", val) && Firebase.setString(fbdo, "/dr_umair_time", global_timestamp))
-  { // On successful Write operation, function returns 1
-    Serial.println("Value Uploaded Successfully");
-    Serial.print("Val = ");
-    Serial.println(val);
-    updated_on_cloud = true;
-    Serial.println(global_timestamp);
-    Serial.println("\n");
-  }
-  else
-  {
-    Serial.println(fbdo.errorReason());
-    post_wifi_setup();
-  }
-}
-
-void read_from_firebase()
-{
-  if (Firebase.getInt(fbdo, "/dr_umair_counter"))
-  {
-
-    if (fbdo.dataTypeEnum() == fb_esp_rtdb_data_type_integer)
-    {
-      counter = fbdo.to<int>();
-      Serial.println(counter);
-      counter_needs_push = true;
-    }
-  }
-  else
-  {
-    Serial.println(fbdo.errorReason());
-  }
-}

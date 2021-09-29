@@ -11,6 +11,10 @@
 #pragma once
 #include <esp_now.h>
 #include <WiFi.h>
+#include "wifi_helpers.h"
+
+unsigned long esp_now_ended = 0;
+
 // Structure example to send data
 // Must match the receiver structure
 typedef struct struct_message
@@ -26,10 +30,11 @@ struct_message myData;
 
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len);
 void esp_now_rx_setup();
+int32_t search_wifi(const char *ssid);
 
 void esp_now_rx_setup()
 {
-     // Set device as a Wi-Fi Station
+    // Set device as a Wi-Fi Station
     WiFi.mode(WIFI_MODE_APSTA);
 
     // Init ESP-NOW
@@ -38,25 +43,47 @@ void esp_now_rx_setup()
         Serial.println("Error initializing ESP-NOW");
         return;
     }
-    else{
+    else
+    {
         Serial.println("Initialized ESP-NOW");
     }
-    esp_wifi_set_ps(WIFI_PS_NONE);
 
     // Once ESPNow is successfully Init, we will register for recv CB to
     // get recv packer info
     esp_now_register_recv_cb(OnDataRecv);
+    WiFi.setSleep(WIFI_PS_NONE);
 }
 
 // callback function that will be executed when data is received
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
 {
-    
+    // delay(2000);
     memcpy(&myData, incomingData, sizeof(myData));
     Serial.print("Bytes received: ");
     Serial.println(len);
     Serial.print("Int: ");
     Serial.println(myData.c);
-
     Serial.println();
+    esp_now_ended = millis();
+    try_wifi = true;
+}
+
+int32_t search_wifi(const char *ssid)
+{
+    if (int32_t n = WiFi.scanNetworks())
+    {
+        for (uint8_t i = 0; i < n; i++)
+        {
+            Serial.println(WiFi.SSID(i).c_str());
+            if (!strcmp(ssid, WiFi.SSID(i).c_str()))
+            {
+                Serial.println("Wifi found");
+                return 1;
+            }
+        }
+        Serial.println("Wifi not found");
+        return 0;
+    }
+
+    return 0;
 }

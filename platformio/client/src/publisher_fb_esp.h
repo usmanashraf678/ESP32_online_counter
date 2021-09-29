@@ -156,7 +156,7 @@ void publish_to_firebase(int val)
     }
 
     else
-        Serial.println("Wifi is off");
+        Serial.println("No conneciton to wifi");
 }
 
 // Serial.println(global_timestamp);
@@ -183,7 +183,7 @@ void publish_to_esp()
 
 void publish_to_fb_and_esp()
 {
-    // esp_retry = 0;
-    // publish_to_esp();
+    esp_retry = 0;
+    publish_to_esp();
     publish_to_firebase(counter);
 }

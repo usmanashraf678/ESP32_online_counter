@@ -3,6 +3,11 @@
 #include <WiFi.h>
 #include <EEPROM.h>
 #include <wifi_helpers.h>
+
+
+String st;
+String content;
+
 /********** Wifi Credentials Chnage *********************/
 bool testWifi(void);
 void launchWeb();
@@ -88,7 +93,7 @@ void setupAP(void)
     }
     st += "</ol>";
     delay(100);
-    WiFi.softAP("keep my seat", "");
+    WiFi.softAP("Dr Irfan Rx Change Wifi", "");
     Serial.println("softap");
     launchWeb();
     Serial.println("over");

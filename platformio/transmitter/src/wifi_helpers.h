@@ -10,7 +10,10 @@
 #include <AsyncElegantOTA.h>
 #include "change_wifi.h"
 #include "large_ssd.h"
-#include "publisher_fb_esp.h"
+#include "publisher_fb.h"
+
+#define WIFI_TIMEOUT_MS 5000
+
 //test comment
 /**************** Firebase Settings ****************************************/
 #define FIREBASE_HOST "queue-mgmt-947d1-default-rtdb.asia-southeast1.firebasedatabase.app" //Your Firebase Project URL goes here without "http:" , "\" and "/"
@@ -35,15 +38,17 @@ void wifi_from_EEPROM();
 
 void start_elegant_OTA()
 {
-    WiFi.softAPConfig(ip, gateway, subnet);
-    WiFi.softAP(ssid_ap, pass_ap, 1, 0);
-    Serial.println(WiFi.softAPIP());
-    Serial.println(WiFi.localIP());
+    // server part of code
+    // WiFi.softAPConfig(ip, gateway, subnet);
+    // WiFi.softAP(ssid_ap, pass_ap, 1, 0);
+    // Serial.println(WiFi.softAPIP());
 
+    WiFi.softAPdisconnect (true);
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(200, "text/plain", "Hi! I am ESP32: ready for OTA."); });
-    server.on("/counter", HTTP_GET, [](AsyncWebServerRequest *request)
-              { request->send_P(200, "text/plain", String(counter).c_str()); });
+    Serial.println(WiFi.localIP());
+    // server.on("/counter", HTTP_GET, [](AsyncWebServerRequest *request)
+    //           { request->send_P(200, "text/plain", String(counter).c_str()); });
 
     AsyncElegantOTA.begin(&server); // Start ElegantOTA
     server.begin();
@@ -67,6 +72,7 @@ void open_wifi_settings()
         server_for_AP.handleClient();
     }
     Serial.println("new password saved to EEPROM, gonna restart in 10sec");
+    
 
     delay(10000);
     ESP.restart();
@@ -75,7 +81,8 @@ void open_wifi_settings()
 void connect_to_wifi(const char *ssid, const char *pass) // try to connect with wifi given the credentials
 {
     uint32_t retry_count = 0;
-    WiFi.mode(WIFI_AP_STA);
+    WiFi.disconnect(true);
+    WiFi.mode(WIFI_MODE_STA);
 REDO: // jump back to the top of the function
     WiFi.begin(ssid, pass);
 
@@ -95,7 +102,7 @@ REDO: // jump back to the top of the function
         Serial.print("failed connecting to wifi: ");
         Serial.println(ssid);
         WiFi.disconnect();
-        if (retry_count < 1)
+        if (retry_count < 2)
         { // 2 retries allowed
             retry_count++;
             goto REDO;
