@@ -17,7 +17,34 @@
 #include "large_ssd.h"
 #include "wifi_events.h"
 
-#define WIFI_SCAN_GAP 10000
+int digits[10][8]{
+    {0, 1, 1, 1, 1, 1, 1, 0}, // digit 0
+    {0, 0, 1, 1, 0, 0, 0, 0}, // digit 1
+    {0, 1, 1, 0, 1, 1, 0, 1}, // digit 2
+    {0, 1, 1, 1, 1, 0, 0, 1}, // digit 3
+    {0, 0, 1, 1, 0, 0, 1, 1}, // digit 4
+    {0, 1, 0, 1, 1, 0, 1, 1}, // digit 5
+    {0, 1, 0, 1, 1, 1, 1, 1}, // digit 6
+    {0, 1, 1, 1, 0, 0, 0, 0}, // digit 7
+    {0, 1, 1, 1, 1, 1, 1, 1}, // digit 8
+    {0, 1, 1, 1, 1, 0, 1, 1}  // digit 9
+};
+
+void DisplayDigit(int Digit)
+{
+  digitalWrite(strobePin, LOW);
+  for (int i = 7; i >= 0; i--)
+  {
+    digitalWrite(clockPin, LOW);
+    if (digits[Digit][i] == 1)
+      digitalWrite(dataPin, HIGH);
+    if (digits[Digit][i] == 0)
+      digitalWrite(dataPin, LOW);
+    digitalWrite(clockPin, HIGH);
+  }
+  digitalWrite(strobePin, HIGH);
+}
+
 void setup()
 {
   // Select the same baud rate if you want to see the datas on Serial Monitor
@@ -31,6 +58,10 @@ void setup()
   pinMode(dataPin, OUTPUT);
   pinMode(buzzerPin, OUTPUT);
   pinMode(selectWifiPin, INPUT_PULLUP);
+  
+  counter = 123;
+  update_shiftOutBuffer();
+  update_display();
 
   WiFiSetup();
   // client_setup();
@@ -39,6 +70,7 @@ void setup()
   esp_now_rx_setup();
   start_elegant_OTA();
   // WiFi.reconnect();
+
 
   // testing the digits
   // for (int i = 0; i<10; i++){
@@ -53,31 +85,33 @@ void setup()
 
 void loop()
 {
-  if (millis() - esp_now_ended > WIFI_SCAN_GAP && try_wifi == true)
-  {
-    Serial.println("scan going to start for wifi");
-    if (WiFi.status() != WL_CONNECTED) //updated_locally == true &&
-    {
-      if (search_wifi(e_ssid.c_str()))
-      {
-        Serial.println("manually restart the module to check");
-        ESP.restart();
-        // time to restart
-        // needs more work!
-        // reconnect_routine();
-      }
-      else
-      {
-        Serial.println("wifi of interest not present");
-      }
-    }
-    else
-    {
-      Serial.println("wifi already connected");
-    }
-    try_wifi = false;
-  }
+  // DisplayDigit(4);
+
+  
+  // for (int i = 0; i < 10; i++)
+  // {
+  //   DisplayDigit(i);
+  //   delay(1000);
+  // }
+  // for (int i = 0; i < 10; i++)
+  // {
+  //   digitalWrite(strobePin, LOW);
+  //   shiftOut(dataPin, clockPin, MSBFIRST, dec_digits[i]);
+  //   digitalWrite(strobePin, HIGH);
+  //   delay(2000);
+  // }
+
+  restart_if_WiFi_fluctuates();
+  // for (int i = 0; i <= 9; i++)
+  // {
+  //   set_all_shiftOutBuffer(i);
+  //   update_display();
+  //   delay(1000);
+  // }
 }
+
+// }
+
 // client_loop();
 
 // if (counter != incoming_counter){
@@ -89,11 +123,6 @@ void loop()
 
 // using internet to read data
 // read_from_firebase();
-// if (counter_needs_push)
-// {
-//   update_shiftOutBuffer();
-//   update_display();
-// }
 
 //   if (updated_on_cloud == false && WiFi.status() == WL_CONNECTED){
 //     // if not updated on cloud and you have a wifi connection, then write to firebase

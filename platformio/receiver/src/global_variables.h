@@ -30,15 +30,24 @@ byte colPins[COLS] = {27, 14, 12, 13};
 /********** Large Display Setting ***************************/
 #define NUM_OF_DISPLAY 3
 
-int strobePin = 27; //Pin connected to Strobe (pin 1) of 4094
-int dataPin = 14;  //Pin connected to Data (pin 2) of 4094
-int clockPin =26;  //Pin connected to Clock (pin 3) of 4094
+int strobePin = 27; //Pin connected to Strobe 
+int dataPin = 14;  //Pin connected to Data 
+int clockPin =26;  //Pin connected to Clock 
 int buzzerPin = 16;
 int selectWifiPin = 18;
 
 int shiftOutBuffer[NUM_OF_DISPLAY]={0};
 // 0-9 and none
 byte segChar[]={ //.gfedcba 0, 1, 2, .. 9, all off
+  // 0b00000010,//1
+  // 0b00000100,//2
+  // 0b00001000,//3
+  // 0b00010000,//4
+  // 0b00000001,//0
+  // 0b00100000,//5
+  // 0b01000000,//6
+  // 0b10000000,  0b01111111,  0b01101111,  0b00000000,
+
   0b00111111,  0b00000110,  0b01011011,  0b01001111,  0b01100110,  0b01101101,
   0b01111101,  0b00000111,  0b01111111,  0b01101111,  0b00000000,
 
@@ -65,7 +74,6 @@ int i = 0;
 int statusCode;
 const char* WIFI_SSID = "HUAWEI-8bz8";//"HUAWEI-8bz8" // Change THIS!! netis_C8B281
 const char* WIFI_PASSWORD = ""; //"qpwjUsMH" // Change THIS!! 04517196
-
 
 String e_ssid;
 String e_pass;

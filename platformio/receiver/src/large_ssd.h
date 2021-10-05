@@ -22,15 +22,25 @@ void update_shiftOutBuffer(){
   shiftOutBuffer[1] = (counter / 10) % 10;
   shiftOutBuffer[0] = (counter / 100) % 10;
 }
+void set_all_shiftOutBuffer(int val){
+  shiftOutBuffer[2] = val;
+  shiftOutBuffer[1] = val;
+  shiftOutBuffer[0] = val;
+}
 
 void update_display()
 {
-  int i = 0;
+  // int i = 0;
   digitalWrite(strobePin, LOW);
-  for (i = NUM_OF_DISPLAY - 1; i > -1; i--)
-  {
-    shiftOut(dataPin, clockPin, LSBFIRST, segChar[shiftOutBuffer[i]]); //check if MSB is required for Tx
-  }
+  // delay(100);
+  // for (i = NUM_OF_DISPLAY - 1; i > -1; i--)
+  // {
+  shiftOut(dataPin, clockPin, LSBFIRST, segChar[shiftOutBuffer[2]]); //check if MSB is required for Tx
+  shiftOut(dataPin, clockPin, LSBFIRST, segChar[shiftOutBuffer[1]]); //check if MSB is required for Tx
+  shiftOut(dataPin, clockPin, LSBFIRST, segChar[shiftOutBuffer[0]]); //check if MSB is required for Tx
+
+  // }
+  // delay(100);
   digitalWrite(strobePin, HIGH);
   updated_locally = true;
   // Serial.println("updated data successfully");

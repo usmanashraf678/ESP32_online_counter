@@ -27,10 +27,12 @@ struct_message myData;
 
 // REPLACE WITH YOUR RECEIVER MAC Address: 08:3A:F2:51:59:30
 // uint8_t broadcastAddress[] = {0x08, 0x3A, 0xF2, 0x51, 0x59, 0x30};
+#define WIFI_SCAN_GAP 10000
 
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len);
 void esp_now_rx_setup();
 int32_t search_wifi(const char *ssid);
+void restart_if_WiFi_fluctuates();
 
 void esp_now_rx_setup()
 {
@@ -59,13 +61,19 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
 {
     // delay(2000);
     memcpy(&myData, incomingData, sizeof(myData));
-    Serial.print("Bytes received: ");
-    Serial.println(len);
-    Serial.print("Int: ");
+    // Serial.print("Bytes received: ");
+    // Serial.println(len);
+    Serial.print("Counter: ");
     Serial.println(myData.c);
-    Serial.println();
-    esp_now_ended = millis();
+    counter = myData.c;
     try_wifi = true;
+
+    esp_now_ended = millis();
+
+    update_shiftOutBuffer();
+    update_display();
+
+    Serial.println("new counter value set!!");
 }
 
 int32_t search_wifi(const char *ssid)
@@ -86,4 +94,32 @@ int32_t search_wifi(const char *ssid)
     }
 
     return 0;
+}
+
+
+void restart_if_WiFi_fluctuates()
+{
+  if (millis() - esp_now_ended > WIFI_SCAN_GAP && try_wifi == true)
+  {
+    // Serial.println("scan going to start for wifi");
+    if (WiFi.status() != WL_CONNECTED) //updated_locally == true &&
+    {
+      if (search_wifi(e_ssid.c_str()))
+      {
+        Serial.println("manually restart the module to check");
+        ESP.restart();
+        // needs more work!
+        // reconnect_routine();
+      }
+      else
+      {
+        Serial.println("wifi of interest not present");
+      }
+    }
+    else
+    {
+      Serial.println("wifi already connected");
+    }
+    try_wifi = false;
+  }
 }
