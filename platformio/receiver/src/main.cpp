@@ -59,7 +59,7 @@ void setup()
   pinMode(buzzerPin, OUTPUT);
   pinMode(selectWifiPin, INPUT_PULLUP);
   
-  counter = 123;
+  counter = 0;
   update_shiftOutBuffer();
   update_display();
 
@@ -69,6 +69,8 @@ void setup()
   figure_out_wifi();
   esp_now_rx_setup();
   start_elegant_OTA();
+
+  
   // WiFi.reconnect();
 
 
@@ -102,6 +104,7 @@ void loop()
   // }
 
   restart_if_WiFi_fluctuates();
+  
   // for (int i = 0; i <= 9; i++)
   // {
   //   set_all_shiftOutBuffer(i);

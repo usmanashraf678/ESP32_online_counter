@@ -16,13 +16,17 @@ void reset_digits();              // reset the digits of the counter
 void write_to_firebase(int val);
 void read_from_firebase();
 void update_shiftOutBuffer();
+void beep();
 
-void update_shiftOutBuffer(){
+
+void update_shiftOutBuffer()
+{
   shiftOutBuffer[2] = counter % 10;
   shiftOutBuffer[1] = (counter / 10) % 10;
   shiftOutBuffer[0] = (counter / 100) % 10;
 }
-void set_all_shiftOutBuffer(int val){
+void set_all_shiftOutBuffer(int val)
+{
   shiftOutBuffer[2] = val;
   shiftOutBuffer[1] = val;
   shiftOutBuffer[0] = val;
@@ -43,9 +47,22 @@ void update_display()
   // delay(100);
   digitalWrite(strobePin, HIGH);
   updated_locally = true;
+  
+  // beep();
+
   // Serial.println("updated data successfully");
 }
 
+void beep(){
+  unsigned long blink_time_start = millis();
+  digitalWrite(buzzerPin, HIGH);
+
+  while (millis() - blink_time_start < 500)
+  {
+    // wait for some time untill SSD blinks
+  }
+  digitalWrite(buzzerPin, LOW);
+}
 void update_display_and_counter()
 {
   update_display();
@@ -168,5 +185,3 @@ void decrement_counter()
   shiftOutBuffer[1] = d_10;
   shiftOutBuffer[2] = d_100;
 }
-
-

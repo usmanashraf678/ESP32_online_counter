@@ -7,7 +7,7 @@ dbRefObject.on('value', function (snapshot) {
     // console.log(time_value);
     
     document.getElementById('count_id').innerHTML =  counter_value;
-    document.getElementById('date_id').innerHTML =  "Last Update: " + time_value;
+    document.getElementById('date_id').innerHTML =  "Last Updated: " + time_value;
 
     });
 

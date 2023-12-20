@@ -38,7 +38,7 @@ String get_time() // returns a string of current time e.g. Sat 20-Apr-19 12:31:4
 
 void start_elegant_OTA()
 {
-  WiFi.softAPdisconnect (true);
+  WiFi.softAPdisconnect(true);
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(200, "text/plain", "Hi! I am ESP32: ready for OTA."); });
@@ -95,6 +95,11 @@ REDO: // jump back to the top of the function
     Serial.print("failed connecting to wifi: ");
     Serial.println(ssid);
     WiFi.disconnect();
+    
+    counter = retry_count * 111;
+    update_shiftOutBuffer();
+    update_display();
+
     if (retry_count < 2)
     { // 2 retries allowed
       retry_count++;
@@ -114,35 +119,43 @@ REDO: // jump back to the top of the function
 
 void figure_out_wifi() // attempt to connect to wifi (1: hard code, 2: EEPROM )
 {
-    // using the hard code ssid and password
+  // using the hard code ssid and password
 
-    Serial.println("Trying with EEPROM now..");
+  Serial.println("Trying with EEPROM now..");
 
-    e_ssid = read_ee_ssid();
-    e_pass = read_ee_pass();
-    connect_to_wifi(e_ssid.c_str(), e_pass.c_str());
+  e_ssid = read_ee_ssid();
+  e_pass = read_ee_pass();
+  connect_to_wifi(e_ssid.c_str(), e_pass.c_str());
 
-    if (WiFi.status() != WL_CONNECTED)
-    { // not connected
-        // connect using credentials from hard code
-        // connect_to_wifi(WIFI_SSID, WIFI_PASSWORD);
-    }
+  if (WiFi.status() != WL_CONNECTED)
+  { // not connected
+    // connect using credentials from hard code
+    // connect_to_wifi(WIFI_SSID, WIFI_PASSWORD);
+  }
 
-    // looking for need to reset wifi network
-    Serial.println("Connect D4 to ground in 1 sec to switch wifi");
-    bool wifi_reset = digitalRead(selectWifiPin);
-    delay(1000);
-    Serial.println(wifi_reset);
-    if (wifi_reset == LOW)
-      open_wifi_settings();
+  // looking for need to reset wifi network
+  Serial.println("Connect D4 to ground in 1 sec to switch wifi");
+  bool wifi_reset = digitalRead(selectWifiPin);
+  delay(1000);
+  Serial.println(wifi_reset);
+  if (wifi_reset == LOW)
+    open_wifi_settings();
 
-    if (WiFi.status() != WL_CONNECTED)
-    {
-        Serial.println("Could not connect after utilizing both in-code and EEPROM creds..");
-        Serial.println("let's continue without wifi");
-    }
-    else
-        post_wifi_setup();
+  if (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.println("Could not connect after utilizing both in-code and EEPROM creds..");
+    Serial.println("let's continue without wifi");
+    counter = 404;
+    update_shiftOutBuffer();
+    update_display();
+  }
+  else
+  {
+    post_wifi_setup();
+    counter = 200;
+    update_shiftOutBuffer();
+    update_display();
+  }
 }
 void post_wifi_setup() // configure time, firebase, elegant ota on wifi connection
 {

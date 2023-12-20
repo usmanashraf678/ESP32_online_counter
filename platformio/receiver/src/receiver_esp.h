@@ -72,6 +72,7 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
 
     update_shiftOutBuffer();
     update_display();
+    beep();
 
     Serial.println("new counter value set!!");
 }

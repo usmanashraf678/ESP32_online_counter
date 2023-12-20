@@ -12,7 +12,6 @@
 #include <ESPAsyncWebServer.h>
 #include <AsyncElegantOTA.h>
 
-
 AsyncWebServer server(80);
 WebServer server_for_AP(80);
 
@@ -21,7 +20,7 @@ WiFiManager wm;
 
 /****************** Constant declarations for small SSD ****************/
 // Pins to control each digit of small SSD (digit_one, digit_two, digit_three)
-const int DIGIT_ONE = 23, DIGIT_TWO = 13, DIGIT_THREE = 12; // CHANGE THIS!!
+const int DIGIT_ONE = 23, DIGIT_TWO = 5, DIGIT_THREE = 17; // CHANGE THIS!!
 
 // BCD Encoder Input for small SSDs (Binary Num is DCBA)
 const int BIT_A = 18, BIT_B = 22, BIT_C = 21, BIT_D = 19;
@@ -46,20 +45,21 @@ char Keys[ROWS][COLS] =
 { {'1','2','3','A'},  {'4','5','6','B'},  {'7','8','9','C'},  {'*','0','#','D'}};
 
 //ATTN: pins used with keypad, these can be changed based on pcb version
-byte rowPins[ROWS] = {13, 12, 14, 27}; //{R1, R2, R3, R4} 34, 35, 32, 33 // CHANGE THIS!!
-byte colPins[COLS] = {26, 25, 33, 32}; 
+byte rowPins[ROWS] = {32, 33, 25, 26}; //{R1, R2, R3, R4} 34, 35, 32, 33 // CHANGE THIS!!
+byte colPins[COLS] = {27, 14, 12, 13}; 
 
 Keypad customKeypad = Keypad(makeKeymap(Keys), rowPins, colPins, ROWS, COLS); 
 /********** Large Display Setting ***************************/
 #define NUM_OF_DISPLAY 3
 
-int strobePin = 15; //Pin connected to Strobe (pin 1) of 4094
-int dataPin = 2;  //Pin connected to Data (pin 2) of 4094
-int clockPin = 4;  //Pin connected to Clock (pin 3) of 4094
+int strobePin = 27; //Pin connected to Strobe (pin 1) of 4094
+int dataPin = 14;  //Pin connected to Data (pin 2) of 4094
+int clockPin =26;  //Pin connected to Clock (pin 3) of 4094
+int buzzerPin = 16;
 
 char shiftOutBuffer[NUM_OF_DISPLAY]={0};
 // 0-9 and none
-byte segChar[]={
+byte segChar[]={ //.gfedcba 0, 1, 2, .. 9, all off
   0b00111111,  0b00000110,  0b01011011,  0b01001111,  0b01100110,  0b01101101,
   0b01111101,  0b00000111,  0b01111111,  0b01101111,  0b00000000,
 };
@@ -81,7 +81,7 @@ int val=0;
 //Variables
 int i = 0;
 int statusCode;
-const char* WIFI_SSID = "HUAWEI-8bz8";//"HUAWEI-8bz8" // Change THIS!! netis_C8B281
-const char* WIFI_PASSWORD = "qpwjUsMH"; //"qpwjUsMH" // Change THIS!! 04517196
+const char* WIFI_SSID = "<redacted>";// To do: put in your wifi SSID
+const char* WIFI_PASSWORD = "<redacted>"; // To do: put in your wifi password
 String st;
 String content;

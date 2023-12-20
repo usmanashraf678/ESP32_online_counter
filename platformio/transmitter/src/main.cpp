@@ -102,8 +102,8 @@ void loop()
     }
     else if (key_pressed == 20 && counter == 353) // D
     {
-      if (WiFi.status() == WL_CONNECTED)
-        server.end(); // turns off elegant OTA if available
+      // if (WiFi.status() == WL_CONNECTED)
+      server.end(); // turns off elegant OTA if available
       WiFi.begin();
       open_wifi_settings();
     }

@@ -33,7 +33,7 @@ byte colPins[COLS] = {27, 14, 12, 13};
 int strobePin = 27; //Pin connected to Strobe 
 int dataPin = 14;  //Pin connected to Data 
 int clockPin =26;  //Pin connected to Clock 
-int buzzerPin = 16;
+int buzzerPin = 4;
 int selectWifiPin = 18;
 
 int shiftOutBuffer[NUM_OF_DISPLAY]={0};

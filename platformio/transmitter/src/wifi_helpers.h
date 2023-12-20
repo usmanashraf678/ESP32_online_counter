@@ -11,6 +11,7 @@
 #include "change_wifi.h"
 #include "large_ssd.h"
 #include "publisher_fb.h"
+#include "small_ssd.h"
 
 #define WIFI_TIMEOUT_MS 5000
 
@@ -27,7 +28,6 @@ IPAddress ip(192, 168, 55, 5);
 IPAddress gateway(192, 168, 55, 1);
 IPAddress subnet(255, 255, 255, 0);
 
-
 void figure_out_wifi();
 void connect_to_wifi(const char *ssid, const char *pass);
 void open_wifi_settings();
@@ -43,7 +43,7 @@ void start_elegant_OTA()
     // WiFi.softAP(ssid_ap, pass_ap, 1, 0);
     // Serial.println(WiFi.softAPIP());
 
-    WiFi.softAPdisconnect (true);
+    WiFi.softAPdisconnect(true);
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(200, "text/plain", "Hi! I am ESP32: ready for OTA."); });
     Serial.println(WiFi.localIP());
@@ -72,7 +72,6 @@ void open_wifi_settings()
         server_for_AP.handleClient();
     }
     Serial.println("new password saved to EEPROM, gonna restart in 10sec");
-    
 
     delay(10000);
     ESP.restart();
@@ -147,9 +146,15 @@ void figure_out_wifi() // attempt to connect to wifi (1: hard code, 2: EEPROM )
     {
         Serial.println("Could not connect after utilizing both in-code and EEPROM creds..");
         Serial.println("let's continue without wifi");
+        counter = 404;
+        // display_on_small_ssd();
     }
     else
+    {
         post_wifi_setup();
+        // display_on_small_ssd();
+        counter = 200;
+    }
 }
 
 void post_wifi_setup() // configure time, firebase, elegant ota on wifi connection
