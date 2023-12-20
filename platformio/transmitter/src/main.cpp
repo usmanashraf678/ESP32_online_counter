@@ -18,6 +18,17 @@
 #include <wifi_helpers.h>
 #include <large_ssd.h>
 #include "wifi_events.h"
+#include "bluetooth_tx.h"
+#include "publisher_fb.h"
+#include "publisher_esp.h"
+
+void reconnect_routine();
+void once_esp_connected();
+void force_channel_one();
+
+bool previous_wifi_state = false;
+bool current_wifi_state = false;
+
 
 void setup()
 {
@@ -35,70 +46,105 @@ void setup()
   pinMode(buzzerPin, OUTPUT);
   pinMode(selectWifiPin, INPUT_PULLUP);
 
-
   // setup elegant OTA
+
+  // setup_BT_TX();
   WiFiSetup();
   figure_out_wifi(); // setup wifi, OTA, and check for wifi change
+  esp_now_setup();
   start_elegant_OTA();
-  publish_to_firebase(counter);
-  
-  // esp_now_setup();
+  publish_to_firebase();
+
 } // end setup()
 
 void loop()
 {
   // count2nine();
-
+  // BT_tx_loop();
   // Displays 3 numbers on small SSD
   display_on_small_ssd();
 
   int customKey = customKeypad.getKey();
   if (customKey)
   {
+    if (WiFi.status() != WL_CONNECTED && search_wifi(e_ssid.c_str())) //updated_locally == true &&
+    {
+      Serial.println("manually restart the module to check");
+      ESP.restart();
+      // time to restart
+      // needs more work!
+      // reconnect_routine();
+    }
     int key_pressed = customKey - 48;
 
     if (key_pressed >= 0 && key_pressed <= 9)
     { // 0-9
       shift_left(key_pressed);
-      publish_to_firebase(counter);
+      updated_locally = true;
+      publish_to_esp();
+      publish_to_firebase();
     }
     else if (key_pressed == 17)
     { // A
       counter++;
       if (counter >= 1000)
         counter = 0;
-      publish_to_firebase(counter);
+      updated_locally = true;
+      publish_to_esp();
+      publish_to_firebase();
     }
     else if (key_pressed == 18)
     { // B
       counter = max(counter - 1, 0);
-      publish_to_firebase(counter);
+      updated_locally = true;
+      publish_to_esp();
+      publish_to_firebase();
     }
     else if (key_pressed == 20 && counter == 353) // D
     {
-      if (WiFi.status() == WL_CONNECTED)
-        server.end(); // turns off elegant OTA if available
+      // if (WiFi.status() == WL_CONNECTED)
+      server.end(); // turns off elegant OTA if available
       WiFi.begin();
       open_wifi_settings();
     }
     else if (key_pressed == -6)
     { // asterisk key
       counter = 0;
-      publish_to_firebase(counter);
+      updated_locally = true;
+      publish_to_esp();
+      publish_to_firebase();
     }
     else if (key_pressed == -13)
     {
-      publish_to_firebase(counter);
+      updated_locally = true;
+      publish_to_esp();
+      publish_to_firebase();
+      // SerialBT.parseInt();
     }
-    if (WiFi.status() != WL_CONNECTED) //updated_locally == true &&
-    {                                  // value changed locally but wifi is not connected
-      reattempt_wifi_connect();
-      // updated_locally = false;
-    }
+    // check elegant ota, firebase and time
   }
-
-
-
 }
 
-
+void reconnect_routine()
+{
+  WiFi.reconnect();
+  // WiFi.disconnect();
+  // WiFi.mode(WIFI_STA);
+  // WiFi.begin(e_ssid.c_str(), e_pass.c_str());
+  // Serial.print("Trying to connect to: ");
+  // Serial.println(e_ssid);
+  // delay(7000);
+  // always using the ssid on the eeprom
+  // Serial.println(channel);
+  // if(WiFi.status() != WL_CONNECTED)
+  // channel = 1;
+  if (WiFi.status() == WL_CONNECTED)
+  {
+        // once_esp_connected(); // move to a new channel
+  }
+  // else
+  // {
+  //   WiFi.disconnect();
+  //   // force_channel_one();
+  // }
+}

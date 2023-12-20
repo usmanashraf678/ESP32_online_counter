@@ -63,8 +63,8 @@ body{
 .date_container{
 	margin-top: 2rem;
     margin-bottom: 0.5rem;
-	font-weight: bold;
-	font-family: cursive;
+	font-weight: regular;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 /* #foot{
 	width:fit-content;
@@ -81,7 +81,7 @@ body{
 	/* background-color: rgba(255, 255, 255, 0.8); */
 	/* border: 1px solid rgba(0, 0, 0, 0.8); */
 	font-size: 1rem;
-	font-family: cursive;
+	font-family:  Verdana, Geneva, 'Lucida Sans Unicode', sans-serif;
 	padding: 0.1rem;
 	text-align: center;
   }

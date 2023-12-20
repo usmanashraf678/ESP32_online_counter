@@ -1,7 +1,6 @@
 #pragma once
 #include <Arduino.h>
 #include <global_variables.h>
-#include "wifi_helpers.h"
 
 /******************** Functions for firebase and large ssd connection ********/
 
@@ -17,26 +16,53 @@ void reset_digits();              // reset the digits of the counter
 void write_to_firebase(int val);
 void read_from_firebase();
 void update_shiftOutBuffer();
+void beep();
 
-void update_shiftOutBuffer(){
+
+void update_shiftOutBuffer()
+{
   shiftOutBuffer[2] = counter % 10;
   shiftOutBuffer[1] = (counter / 10) % 10;
   shiftOutBuffer[0] = (counter / 100) % 10;
 }
+void set_all_shiftOutBuffer(int val)
+{
+  shiftOutBuffer[2] = val;
+  shiftOutBuffer[1] = val;
+  shiftOutBuffer[0] = val;
+}
 
 void update_display()
 {
-  int i = 0;
+  // int i = 0;
   digitalWrite(strobePin, LOW);
-  for (i = NUM_OF_DISPLAY - 1; i > -1; i--)
-  {
-    shiftOut(dataPin, clockPin, LSBFIRST, segChar[shiftOutBuffer[i]]); //check if MSB is required for Tx
-  }
+  // delay(100);
+  // for (i = NUM_OF_DISPLAY - 1; i > -1; i--)
+  // {
+  shiftOut(dataPin, clockPin, LSBFIRST, segChar[shiftOutBuffer[2]]); //check if MSB is required for Tx
+  shiftOut(dataPin, clockPin, LSBFIRST, segChar[shiftOutBuffer[1]]); //check if MSB is required for Tx
+  shiftOut(dataPin, clockPin, LSBFIRST, segChar[shiftOutBuffer[0]]); //check if MSB is required for Tx
+
+  // }
+  // delay(100);
   digitalWrite(strobePin, HIGH);
   updated_locally = true;
-  Serial.println("updated data successfully");
+  
+  // beep();
+
+  // Serial.println("updated data successfully");
 }
 
+void beep(){
+  unsigned long blink_time_start = millis();
+  digitalWrite(buzzerPin, HIGH);
+
+  while (millis() - blink_time_start < 500)
+  {
+    // wait for some time untill SSD blinks
+  }
+  digitalWrite(buzzerPin, LOW);
+}
 void update_display_and_counter()
 {
   update_display();
@@ -83,6 +109,54 @@ void blink_display()
   }
 }
 
+void reset_digits()
+{
+  int i = 0;
+  for (i = 0; i < NUM_OF_DISPLAY; i++)
+  {
+    shiftOutBuffer[i] = 0;
+  }
+
+  update_display_and_counter();
+}
+
+void write_to_firebase(int val, String timestamp)
+{
+  // Firebase Error Handling And Writing Data At Specifed Path************************************************
+  if (Firebase.setInt(fbdo, "/dr_umair_counter", val) && Firebase.setString(fbdo, "/dr_umair_time", global_timestamp))
+  { // On successful Write operation, function returns 1
+    Serial.println("Value Uploaded Successfully");
+    Serial.print("Val = ");
+    Serial.println(val);
+    updated_on_cloud = true;
+    Serial.println(global_timestamp);
+    Serial.println("\n");
+  }
+  else
+  {
+    Serial.println(fbdo.errorReason());
+    // post_wifi_setup();
+  }
+}
+
+void read_from_firebase()
+{
+  if (Firebase.getInt(fbdo, "/dr_umair_counter"))
+  {
+
+    if (fbdo.dataTypeEnum() == fb_esp_rtdb_data_type_integer)
+    {
+      counter = fbdo.to<int>();
+      Serial.println(counter);
+      counter_needs_push = true;
+    }
+  }
+  else
+  {
+    Serial.println(fbdo.errorReason());
+  }
+}
+
 void shift_left(int new_entrant)
 {
   shiftOutBuffer[2] = shiftOutBuffer[1];
@@ -110,52 +184,4 @@ void decrement_counter()
   shiftOutBuffer[0] = d_1;
   shiftOutBuffer[1] = d_10;
   shiftOutBuffer[2] = d_100;
-}
-
-void reset_digits()
-{
-  int i = 0;
-  for (i = 0; i < NUM_OF_DISPLAY; i++)
-  {
-    shiftOutBuffer[i] = 0;
-  }
-
-  update_display_and_counter();
-}
-
-void write_to_firebase(int val, String timestamp)
-{
-  // Firebase Error Handling And Writing Data At Specifed Path************************************************
-  if (Firebase.setInt(fbdo, "/dr_umair_counter", val) && Firebase.setString(fbdo, "/dr_umair_time", global_timestamp))
-  { // On successful Write operation, function returns 1
-    Serial.println("Value Uploaded Successfully");
-    Serial.print("Val = ");
-    Serial.println(val);
-    updated_on_cloud = true;
-    Serial.println(global_timestamp);
-    Serial.println("\n");
-  }
-  else
-  {
-    Serial.println(fbdo.errorReason());
-    post_wifi_setup();
-  }
-}
-
-void read_from_firebase()
-{
-  if (Firebase.getInt(fbdo, "/dr_umair_counter"))
-  {
-
-    if (fbdo.dataTypeEnum() == fb_esp_rtdb_data_type_integer)
-    {
-      counter = fbdo.to<int>();
-      Serial.println(counter);
-      counter_needs_push = true;
-    }
-  }
-  else
-  {
-    Serial.println(fbdo.errorReason());
-  }
 }

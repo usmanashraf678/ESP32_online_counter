@@ -40,7 +40,7 @@ void update_large_display()
     shiftOut(dataPin, clockPin, LSBFIRST, segChar[shiftOutBuffer[i]]); //check if MSB is required for Tx
   }
   digitalWrite(strobePin, HIGH);
-  updated_locally = true;
+  // updated_locally = true;
   Serial.println("updated data successfully");
 }
 void decrement_counter()

@@ -3,7 +3,6 @@
 #include <Arduino.h>
 #include <Keypad.h>
 #include <FirebaseESP32.h>
-#include "global_variables.h"
 
 
 /************ Counter on firebase declarations *****************************/
@@ -44,15 +43,14 @@ byte segChar[]={ //.gfedcba 0, 1, 2, .. 9, all off
 };
 
 
-#define WIFI_TIMEOUT_MS 5000
 
 /*************************** Global variables for Wifi Credentials change ***********/
 //Variables
 const char* WIFI_SSID = "fake network";//"HUAWEI-8bz8" // Change THIS!! netis_C8B281
 const char* WIFI_PASSWORD = ""; //"qpwjUsMH" // Change THIS!! 04517196
 
-const char* ssid_ap = "dr_irfan_counter";//"HUAWEI-8bz8" // Change THIS!! netis_C8B281
-const char* pass_ap = "usman@kms.com"; //"qpwjUsMH" // Change THIS!! 04517196
+// const char* ssid_ap = "dr_irfan_counter";//"HUAWEI-8bz8" // Change THIS!! netis_C8B281
+// const char* pass_ap = "usman@kms.com"; //"qpwjUsMH" // Change THIS!! 04517196
 
 
 String e_ssid;

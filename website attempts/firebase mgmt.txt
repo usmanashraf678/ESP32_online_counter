@@ -2,3 +2,7 @@ npm list -g --depth=0
 
 firebase init
 fierbase login
+
+// to deploy
+firebase deploy
+

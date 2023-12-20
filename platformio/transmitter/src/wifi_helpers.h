@@ -10,7 +10,11 @@
 #include <AsyncElegantOTA.h>
 #include "change_wifi.h"
 #include "large_ssd.h"
-#include "publisher_fb_esp.h"
+#include "publisher_fb.h"
+#include "small_ssd.h"
+
+#define WIFI_TIMEOUT_MS 5000
+
 //test comment
 /**************** Firebase Settings ****************************************/
 #define FIREBASE_HOST "queue-mgmt-947d1-default-rtdb.asia-southeast1.firebasedatabase.app" //Your Firebase Project URL goes here without "http:" , "\" and "/"
@@ -24,7 +28,6 @@ IPAddress ip(192, 168, 55, 5);
 IPAddress gateway(192, 168, 55, 1);
 IPAddress subnet(255, 255, 255, 0);
 
-
 void figure_out_wifi();
 void connect_to_wifi(const char *ssid, const char *pass);
 void open_wifi_settings();
@@ -35,15 +38,17 @@ void wifi_from_EEPROM();
 
 void start_elegant_OTA()
 {
-    WiFi.softAPConfig(ip, gateway, subnet);
-    WiFi.softAP(ssid_ap, pass_ap, 1, 0);
-    Serial.println(WiFi.softAPIP());
-    Serial.println(WiFi.localIP());
+    // server part of code
+    // WiFi.softAPConfig(ip, gateway, subnet);
+    // WiFi.softAP(ssid_ap, pass_ap, 1, 0);
+    // Serial.println(WiFi.softAPIP());
 
+    WiFi.softAPdisconnect(true);
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(200, "text/plain", "Hi! I am ESP32: ready for OTA."); });
-    server.on("/counter", HTTP_GET, [](AsyncWebServerRequest *request)
-              { request->send_P(200, "text/plain", String(counter).c_str()); });
+    Serial.println(WiFi.localIP());
+    // server.on("/counter", HTTP_GET, [](AsyncWebServerRequest *request)
+    //           { request->send_P(200, "text/plain", String(counter).c_str()); });
 
     AsyncElegantOTA.begin(&server); // Start ElegantOTA
     server.begin();
@@ -75,7 +80,8 @@ void open_wifi_settings()
 void connect_to_wifi(const char *ssid, const char *pass) // try to connect with wifi given the credentials
 {
     uint32_t retry_count = 0;
-    WiFi.mode(WIFI_AP_STA);
+    WiFi.disconnect(true);
+    WiFi.mode(WIFI_MODE_STA);
 REDO: // jump back to the top of the function
     WiFi.begin(ssid, pass);
 
@@ -95,7 +101,7 @@ REDO: // jump back to the top of the function
         Serial.print("failed connecting to wifi: ");
         Serial.println(ssid);
         WiFi.disconnect();
-        if (retry_count < 1)
+        if (retry_count < 2)
         { // 2 retries allowed
             retry_count++;
             goto REDO;
@@ -140,9 +146,15 @@ void figure_out_wifi() // attempt to connect to wifi (1: hard code, 2: EEPROM )
     {
         Serial.println("Could not connect after utilizing both in-code and EEPROM creds..");
         Serial.println("let's continue without wifi");
+        counter = 404;
+        // display_on_small_ssd();
     }
     else
+    {
         post_wifi_setup();
+        // display_on_small_ssd();
+        counter = 200;
+    }
 }
 
 void post_wifi_setup() // configure time, firebase, elegant ota on wifi connection
